@@ -1,12 +1,11 @@
 // If you have JDK 6 and not JDK 7 then replace all three instances of the number 7 to the number 6
 
 organization := "com.micronautics"
-
-name := "SquareTest"
-
+licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html"))
+name := "square_api"
 version := "0.1.0"
-
 scalaVersion := "2.11.8"
+crossScalaVersions := Seq("2.10.6", "2.11.8")
 
 scalacOptions ++= Seq("-deprecation", "-encoding", "UTF-8", "-feature", "-target:jvm-1.7", "-unchecked",
     "-Ywarn-adapted-args", "-Ywarn-value-discard", "-Xlint")
@@ -27,9 +26,7 @@ resolvers ++= Seq(
 
 libraryDependencies ++= Seq(
   "com.mashape.unirest"     %  "unirest-java"       % "1.4.9" withSources(),
-  "com.github.nscala-time"  %% "nscala-time"        % "2.12.0" withSources(),
-  "com.micronautics"        %% "scalacourses-utils" % "0.2.14" withSources(),
-  "org.scalatest"           %% "scalatest"          % "2.2.6" % "test" withSources()
+  "com.github.nscala-time"  %% "nscala-time"        % "2.12.0" withSources()
 )
 
 logLevel := Level.Warn
@@ -47,4 +44,5 @@ initialCommands in console := """
 
 cancelable := true
 
-sublimeTransitive := true
+bintrayOrganization := Some("micronautics")
+bintrayRepository := "scala"
