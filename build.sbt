@@ -21,13 +21,15 @@ scalacOptions in (Compile, doc) <++= baseDirectory.map {
 javacOptions ++= Seq("-Xlint:deprecation", "-Xlint:unchecked", "-source", "1.7", "-target", "1.7", "-g:vars")
 
 resolvers ++= Seq(
-  "Lightbend Releases" at "http://repo.typesafe.com/typesafe/releases"
+  "Lightbend Releases" at "http://repo.typesafe.com/typesafe/releases",
+  "micronautics/scala on bintray" at "http://dl.bintray.com/micronautics/scala"
 )
 
 libraryDependencies ++= Seq(
-  "com.mashape.unirest" % "unirest-java" % "1.4.9"
-//  "org.scalatest"           %% "scalatest"     % "2.2.3" % "test" withSources(),
-//  "com.github.nscala-time"  %% "nscala-time"   % "1.8.0" withSources()
+  "com.mashape.unirest"     %  "unirest-java"       % "1.4.9" withSources(),
+  "com.github.nscala-time"  %% "nscala-time"        % "2.12.0" withSources(),
+  "com.micronautics"        %% "scalacourses-utils" % "0.2.14" withSources(),
+  "org.scalatest"           %% "scalatest"          % "2.2.6" % "test" withSources()
 )
 
 logLevel := Level.Warn
