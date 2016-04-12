@@ -1,0 +1,115 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <script type="text/javascript" src="https://js.squareup.com/v2/paymentform"></script>
+  <script>
+  var paymentForm = new SqPaymentForm({
+    applicationId: '', // <-- REQUIRED: Add Application ID
+    inputClass: 'sq-input',
+    inputStyles: [
+      {
+        fontSize: '15px',
+        padding: '5px',
+        lineHeight: '20px'
+      }
+    ],
+    cardNumber: {
+      elementId: 'sq-card-number',
+      placeholder: '•••• •••• •••• ••••'
+    },
+    cvv: {
+      elementId: 'sq-cvv',
+      placeholder: 'CVV'
+    },
+    expirationDate: {
+      elementId: 'sq-expiration-date',
+      placeholder: 'MM/YY'
+    },
+    postalCode: {
+      elementId: 'sq-postal-code'
+    },
+    callbacks: {
+      cardNonceResponseReceived: function(errors, nonce, cardData) {
+        if (errors) {
+          errors.forEach(function(error) {
+            console.log(error.message);
+            alert(error.message);
+          });
+        } else {
+          console.log('Nonce received:' + nonce);
+          alert('Nonce received:' + nonce);
+        }
+      },
+      unsupportedBrowserDetected: function() {
+        alert("You are using an unsupported browser. Try a current version of Safari, Chrome or Firefox")
+      }
+    }
+  });
+
+  function requestCardNonce() {
+    paymentForm.requestCardNonce();
+  }
+  </script>
+  <style type="text/css">
+    td {
+      font-family: "Lucida Grande", Helvetica, sans-serif;
+      font-size: 15px;
+    }
+    form {
+      width: 500px;
+    }
+    .label {
+      padding-top: 8px;
+      white-space: nowrap;
+      vertical-align: top;
+    }
+    input {
+      padding: 5px;
+    }
+    .sq-input, input {
+      width: 100%;
+      line-height: 20px;
+      border: 1px solid rgb(223, 223, 223);
+      outline-offset: -2px;
+      margin-bottom: 10px;
+    }
+    .sq-input--focus, input:focus {
+      /* how your inputs should appear when they have focus */
+      outline: 5px auto rgb(59, 153, 252);
+    }
+    .sq-input--error, input:invalid {
+      /* how your inputs should appear when invalid */
+      outline: 5px auto rgb(255, 97, 97);
+    }
+  </style>
+</head>
+
+<body>
+  <form action="/blah" method="POST">
+    <table>
+      <tr>
+        <td class="label">Amount</td>
+        <td><input name="amount" id="amount" placeholder="123.45 (USD)" title="USD"/></td>
+      </tr>
+      <tr>
+        <td class="label">Card Number</td>
+        <td><div id="sq-card-number"></div></td>
+      </tr>
+      <tr>
+        <td class="label">CVV (on back of card)</td>
+        <td><div id="sq-cvv"></div></td>
+      </tr>
+      <tr>
+        <td class="label">Expiration Date</td>
+        <td><div id="sq-expiration-date"></div></td>
+      </tr>
+      <tr>
+        <td class="label">Zip / Postal Code</td>
+        <td><div id="sq-postal-code"></div></td>
+      </tr>
+    </table>
+    <button type="submit" onclick="event.preventDefault(); requestCardNonce()">Submit</button>
+  </form>
+</body>
+</html>

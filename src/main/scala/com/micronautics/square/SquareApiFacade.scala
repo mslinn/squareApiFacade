@@ -29,6 +29,24 @@ case class SquareApiFacade(accessToken: String) {
     "Authorization" -> s"Bearer $accessToken"
   ).toMap[String, String]
 
+  /** @param amount is in cents and assumes USD */
+  def charge(locationId: String, nonce: String, amount: Int) = {
+    val url = s"https://connect.squareup.com/v2/locations/$locationId/transactions"
+    val response = Unirest
+      .post(url)
+      .headers(headers.asJava)
+      .body(s"""{
+               |  'card_nonce': '$nonce',
+               |  'amount_money': {
+               |    'amount': $amount,
+               |    'currency': 'USD'
+               |  },
+               |  'idempotency_key': ${ java.util.UUID.randomUUID }
+               |}""".stripMargin)
+      .asJson
+    response
+  }
+
   /** Assumes that the returned value never changes during program lifespan */
   lazy val locations: List[SquareLocation] = {
     val responseJson: HttpResponse[JsonNode] = Unirest
@@ -50,6 +68,7 @@ case class SquareApiFacade(accessToken: String) {
     }
   }
 
+  /** TODO find out why from parameter is ignored; all transactions are returned */
   def transactions(locationId: String, from: DateTime=DateTime.now.minusMonths(1), to: DateTime=DateTime.now, sortAscending: Boolean=true) = {
     val paramMap: Map[String, String] = List(
       "begin_time" -> isoFormatter.print(from),
