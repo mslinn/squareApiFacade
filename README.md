@@ -7,6 +7,6 @@ If you want to use this library in your project, add the following to your proje
 
     resolvers += "micronautics/scala on bintray" at "http://dl.bintray.com/micronautics/scala"
 
-    libraryDependencies += "com.micronautics" %% "squareapi" % "0.1.1" withSources()
+    libraryDependencies += "com.micronautics" %% "square_api" % "0.1.2" withSources()
 
 This is experimental code and is not production quality. Use at your own risk.

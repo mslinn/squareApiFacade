@@ -1,6 +1,6 @@
 package com.micronautics.square
 
-import java.util.TimeZone
+import java.util.{TimeZone, UUID}
 
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat.fullDateTime
@@ -35,8 +35,8 @@ object Address {
     Address(
       address_line_1=json.getString("address_line_1"),
       locality=json.getString("locality"),
-      postal_code=json.getString("postal_code"),
-      country=json.getString("country"),
+      postal_code=PostalCode(json.getString("postal_code")),
+      country=Country(json.getString("country")),
       address_line_2=if (json.has("address_line_2")) json.getString("address_line_2") else "",
       address_line_3=if (json.has("address_line_3")) json.getString("address_line_3") else "",
       sublocality=if (json.has("sublocality")) json.getString("sublocality") else "",
@@ -51,8 +51,8 @@ object Address {
 case class Address(
   address_line_1: String,
   locality: String,
-  postal_code: String,
-  country: String,
+  postal_code: PostalCode,
+  country: Country,
   address_line_2: String="",
   address_line_3: String="",
   sublocality: String="",
@@ -78,6 +78,10 @@ case class Card(
    override def toString = s"$card_brand ending with $last_4"
 }
 
+case class Country(value: String) extends AnyVal {
+  override def toString = value
+}
+
 object Money {
   def apply(json: JSONObject): Money = Money(json.getInt("amount"), json.getString("currency"))
 }
@@ -85,6 +89,27 @@ object Money {
 case class Money(amount: Int, currency: String) {
   def toJson = this.toJsonNameValue
   override def toString = s"$amount $currency"
+}
+
+case class Nonce(value: String) extends AnyVal {
+  override def toString = value
+}
+
+case class Payment(nonce: Nonce, amount: Money, billingAddress: Address, uuid: String=UUID.randomUUID.toString, maybeNote: Option[String], maybeRefId: Option[String]) {
+  def toJson = s""""{
+                   |  "idempotency_key": "$uuid",
+                   |  "billing_address": ${ billingAddress.toJson },
+                   |  "amount_money": ${ amount.toJson },
+                   |  "card_nonce": "$nonce",
+                   |  ${ maybeRefId.map( refId => s""" "reference_id: "$refId" """).mkString },
+                   |  ${ maybeNote.map( note => s""" "note": "$note" """).mkString },
+                   |  "delay_capture": false
+                   |}
+                   """.stripMargin
+}
+
+case class PostalCode(value: String) extends AnyVal {
+  override def toString = value
 }
 
 case class Refund(
