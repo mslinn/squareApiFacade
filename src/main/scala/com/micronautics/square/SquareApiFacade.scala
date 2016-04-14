@@ -38,7 +38,7 @@ case class SquareApiFacade(accessToken: String) {
       .body(s"""{
                |  'card_nonce': '$nonce',
                |  'amount_money': {
-               |    'amount': $amount,
+               |    'amount_money': $amount,
                |    'currency': 'USD'
                |  },
                |  'idempotency_key': ${ java.util.UUID.randomUUID }
@@ -60,10 +60,11 @@ case class SquareApiFacade(accessToken: String) {
       val locationStrs: List[String] =
         location.getJSONArray("capabilities").iterator.asInstanceOf[JIterator[String]].asScala.toList
       SquareLocation(
-        location.getString("name"),
-        location.getString("id"),
-        TimeZone.getTimeZone(location.getString("timezone")),
-        locationStrs.map(LocationCapability.valueOf)
+        name=location.getString("name"),
+        id=location.getString("id"),
+        timezone=TimeZone.getTimeZone(location.getString("timezone")),
+        capabilities=locationStrs.map(LocationCapability.valueOf),
+        address=if (location.has("address")) Some(Address(location.getJSONObject("address"))) else None
       )
     }
   }
@@ -91,7 +92,7 @@ case class SquareApiFacade(accessToken: String) {
         val cd = tj.getJSONObject("card_details")
         val cardJson = cd.getJSONObject("card")
         val card = Card(cardJson.getString("last_4"), cardJson.getString("card_brand"))
-        val cardDetails = CardDetails(cd.getString("entry_method"), card, cd.getString("status"))
+        val cardDetails = TenderCardDetails(cd.getString("entry_method"), card, cd.getString("status"))
 
         val am = tj.getJSONObject("amount_money")
         val amount = Money(am.getInt("amount"), am.getString("currency"))
@@ -100,31 +101,41 @@ case class SquareApiFacade(accessToken: String) {
         val processingFee = Money(pf.getInt("amount"), pf.getString("currency"))
 
         Tender(
-          tj.getString("transaction_id"),
-          cardDetails,
-          new DateTime(tj.get("created_at")),
-          amount,
-          tj.getString("id"),
-          tj.getString("type"),
-          processingFee,
-          tj.getString("location_id")
+          transaction_id=tj.getString("transaction_id"),
+          created_at=new DateTime(tj.get("created_at")),
+          amount_money=amount,
+          id=tj.getString("id"),
+         `type`=tj.getString("type"),
+          processing_fee_money=processingFee,
+          location_id=tj.getString("location_id"),
+          card_details=Some(cardDetails)
         )
       }
 
       val refundsJson: List[JSONObject] = if (tx.has("refunds"))
         tx.getJSONArray("refunds").iterator.asInstanceOf[JIterator[JSONObject]].asScala.toList else Nil
-      val refunds: List[Refund] = refundsJson.map { refund => // todo write me
-        Refund("huh")
+      val refunds: List[Refund] = refundsJson.map { json =>
+        Refund(
+          id=json.getString("id"),
+          location_id = json.getString("location_id"),
+          transaction_id = json.getString("transaction_id"),
+          tender_id = json.getString("tender_id"),
+          created_at = json.getString("created_at"),
+          reason = json.getString("reason"),
+          amount_money = Money(json.getJSONObject("amount_money")),
+          status = json.getString("status"),
+          processing_fee_money = Money(json.getJSONObject("processing_fee_money"))
+        )
       }
 
       SquareTransaction(
-        tx.getString("id"),
-        tx.getString("location_id"),
-        new DateTime(tx.getString("created_at")),
-        SquareProduct.valueOf(tx.getString("product")),
-        tenders,
-        if (tx.has("reference_id")) Some(tx.getString("reference_id")) else None,
-        refunds
+        id=tx.getString("id"),
+        location_id=tx.getString("location_id"),
+        created_at=new DateTime(tx.getString("created_at")),
+        product=SquareProduct.valueOf(tx.getString("product")),
+        tenders=tenders,
+        reference_id=if (tx.has("reference_id")) Some(tx.getString("reference_id")) else None,
+        refunds=refunds
       )
     }
     transactions

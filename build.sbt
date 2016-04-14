@@ -1,9 +1,7 @@
-// If you have JDK 6 and not JDK 7 then replace all three instances of the number 7 to the number 6
-
 organization := "com.micronautics"
 licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html"))
 name := "square_api"
-version := "0.1.0"
+version := "0.1.1"
 scalaVersion := "2.11.8"
 crossScalaVersions := Seq("2.10.6", "2.11.8")
 
