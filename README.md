@@ -1,4 +1,7 @@
-# Square Connect API v2 Library for Scala #
+# Square Connect API v2 Library for Scala
+
+[![Build Status](https://travis-ci.org/mslinn/squareApiFacade.svg?branch=master)](https://travis-ci.org/mslinn/squareApiFacade)
+[ ![Download](https://api.bintray.com/packages/micronautics/scala/square_api/images/download.svg) ](https://bintray.com/micronautics/scala/square_api/_latestVersion)
 
 Scala library for the [Square Connect API v2](https://docs.connect.squareup.com/articles/processing-payment-rest/).
 
