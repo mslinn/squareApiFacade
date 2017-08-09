@@ -1,5 +1,6 @@
 # Square Connect API v2 Library for Scala
 
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Build Status](https://travis-ci.org/mslinn/squareApiFacade.svg?branch=master)](https://travis-ci.org/mslinn/squareApiFacade)
 [ ![Download](https://api.bintray.com/packages/micronautics/scala/square_api/images/download.svg) ](https://bintray.com/micronautics/scala/square_api/_latestVersion)
 
