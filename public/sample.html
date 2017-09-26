@@ -4,51 +4,49 @@
   <title></title>
   <script type="text/javascript" src="https://js.squareup.com/v2/paymentform"></script>
   <script>
-  var paymentForm = new SqPaymentForm({
-    applicationId: '', // <-- REQUIRED: Add Application ID
-    inputClass: 'sq-input',
-    inputStyles: [
-      {
-        fontSize: '15px',
-        padding: '5px',
-        lineHeight: '20px'
-      }
-    ],
-    cardNumber: {
-      elementId: 'sq-card-number',
-      placeholder: '•••• •••• •••• ••••'
-    },
-    cvv: {
-      elementId: 'sq-cvv',
-      placeholder: 'CVV'
-    },
-    expirationDate: {
-      elementId: 'sq-expiration-date',
-      placeholder: 'MM/YY'
-    },
-    postalCode: {
-      elementId: 'sq-postal-code'
-    },
-    callbacks: {
-      cardNonceResponseReceived: function(errors, nonce, cardData) {
-        if (errors) {
-          errors.forEach(function(error) {
-            console.log(error.message);
-            alert(error.message);
-          });
-        } else {
-          console.log('Nonce received:' + nonce);
-          alert('Nonce received:' + nonce);
+  function createPayment() {
+    new SqPaymentForm({
+      applicationId: '', // <-- REQUIRED: Add Application ID
+      inputClass: 'sq-input',
+      inputStyles: [
+        {
+          fontSize: '15px',
+          padding: '5px',
+          lineHeight: '20px'
         }
+      ],
+      cardNumber: {
+        elementId: 'sq-card-number',
+        placeholder: '•••• •••• •••• ••••'
       },
-      unsupportedBrowserDetected: function() {
-        alert("You are using an unsupported browser. Try a current version of Safari, Chrome or Firefox")
+      cvv: {
+        elementId: 'sq-cvv',
+        placeholder: 'CVV'
+      },
+      expirationDate: {
+        elementId: 'sq-expiration-date',
+        placeholder: 'MM/YY'
+      },
+      postalCode: {
+        elementId: 'sq-postal-code'
+      },
+      callbacks: {
+        cardNonceResponseReceived: function(errors, nonce, cardData) {
+          if (errors) {
+            errors.forEach(function(error) {
+              console.log(error.message);
+              alert(error.message);
+            });
+          } else {
+            console.log('Nonce received:' + nonce);
+            alert('Nonce received:' + nonce);
+          }
+        },
+        unsupportedBrowserDetected: function() {
+          alert("You are using an unsupported browser. Try a current version of Safari, Chrome or Firefox")
+        }
       }
-    }
-  });
-
-  function requestCardNonce() {
-    paymentForm.requestCardNonce();
+    });
   }
   </script>
   <style type="text/css">
@@ -109,7 +107,7 @@
         <td><div id="sq-postal-code"></div></td>
       </tr>
     </table>
-    <button type="submit" onclick="event.preventDefault(); requestCardNonce()">Submit</button>
+    <button type="submit" onclick="event.preventDefault(); createPayment()">Submit</button>
   </form>
 </body>
 </html>
