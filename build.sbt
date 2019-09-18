@@ -2,8 +2,8 @@ name := "square_api"
 organization := "com.micronautics"
 licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html"))
 version := "0.1.3"
-scalaVersion := "2.12.3"
-crossScalaVersions := Seq("2.10.6", "2.11.8", "2.12.3")
+scalaVersion := "2.12.10"
+crossScalaVersions := Seq("2.10.6", "2.11.12", "2.12.10")
 
 scalacOptions ++= (
   scalaVersion {
